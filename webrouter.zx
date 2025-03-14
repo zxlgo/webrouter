@@ -1,0 +1,60 @@
+namespace webrouter;
+
+// Router is an object that manages routes and handlers.
+define Router {
+    let request;
+    let routes = [];
+    let errorHandler;
+
+    fn construct(request) {
+        this.request = request;
+    }
+
+    fn get(path, handler) {
+        this.any("GET", path, handler);
+    }
+
+    fn post(path, handler) {
+        this.any("POST", path, handler);
+    }
+
+    fn put(path, handler) {
+        this.any("PUT", path, handler);
+    }
+
+    fn delete(path, handler) {
+        this.any("DELETE", path, handler);
+    }
+
+    fn any(method, path, handler) {
+        handler = Handler(this.request, handler);
+
+        let route = array {
+            method: method,
+            path: path,
+            handler: handler,
+        };
+
+        routes.append(route);
+    }
+
+    fn handle() {
+        const method = this.request.method;
+        const url = this.request.url;
+
+        for route in this.routes {
+            if route.path == url && route.method == method {
+                route.handler.handle();
+                return;
+            }
+        }
+
+        if this.errorHandler != nil {
+            this.errorHandler();
+            return;
+        }
+
+        // Fail with a 404 if the route is not found
+        fail("404 Not Found");
+    }
+}

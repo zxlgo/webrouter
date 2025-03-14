@@ -1,0 +1,15 @@
+namespace webrouter;
+
+define Handler {
+    let request;
+    let handler;
+
+    fn construct(request, handler) {
+        this.request = request;
+        this.handler = handler;
+    }
+
+    fn handle() {
+        this.handler(this.request);
+    }
+}
