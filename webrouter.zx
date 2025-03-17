@@ -3,11 +3,13 @@ namespace webrouter;
 // Router is an object that manages routes and handlers.
 define Router {
     let request;
+    let writer;
     let routes = [];
     let errorHandler;
 
-    fn construct(request) {
+    fn construct(request, writer) {
         this.request = request;
+        this.writer = writer;
     }
 
     fn get(path, handler) {
@@ -44,7 +46,8 @@ define Router {
 
         for route in this.routes {
             if route.path == url && route.method == method {
-                route.handler.handle();
+                const data = route.handler.handle();
+                this.writer(data);
                 return;
             }
         }
