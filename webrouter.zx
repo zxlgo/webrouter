@@ -43,9 +43,11 @@ define Router {
     fn handle() {
         const method = this.request.method;
         const url = this.request.url;
+        let uri = url.split("?");
+        uri = uri[0];
 
         for route in this.routes {
-            if route.path == url && route.method == method {
+            if route.path == uri && route.method == method {
                 const data = route.handler.handle();
                 this.writer(data);
                 return;
